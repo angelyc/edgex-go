@@ -1,7 +1,6 @@
 package adapter
 
 import (
-	"context"
 	"crypto/tls"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
@@ -11,12 +10,7 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
-type mqttClient struct {
-	client mqtt.Client
-	topic  string
-}
-
-func newMqttClient(addr address, cert string, key string) client {
+func newMqttClient(addr address, cert string, key string) mqtt.Client {
 	protocol := strings.ToLower(addr.Protocol)
 	opts := MQTT.NewClientOptions()
 	broker := protocol + "://" + addr.Address + ":" + strconv.Itoa(addr.Port) + addr.Path
@@ -40,15 +34,11 @@ func newMqttClient(addr address, cert string, key string) client {
 		}
 		opts.SetTLSConfig(tlsconfig)
 	}
-
-	sender := &mqttClient{
-		client: MQTT.NewClient(opts),
-		topic:  addr.Topic,
-	}
-	return sender
+	opts.OnConnect = Subscribe
+	return MQTT.NewClient(opts)
 }
 
-func (client *mqttClient) Sender(data []byte, ctx context.Context) bool {
+func (client *MqttClient) Sender(topic string, data interface{}) bool {
 	if !client.client.IsConnected() {
 		fmt.Println("INFO: Connecting to mqtt server")
 		if token := client.client.Connect(); token.Wait() && token.Error() != nil {
@@ -56,13 +46,13 @@ func (client *mqttClient) Sender(data []byte, ctx context.Context) bool {
 			return false
 		}
 	}
-	token := client.client.Publish(client.topic, 0, false, data)
+	token := client.client.Publish(topic, 0, false, data)
 	token.Wait()
 	if token.Error() != nil {
 		fmt.Println(token.Error().Error())
 		return false
 	} else {
-		fmt.Println(fmt.Sprintf("Sent data: %X", data))
+		fmt.Println(fmt.Sprintf("Sent data: %s", data))
 		return true
 	}
 }

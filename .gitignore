@@ -35,4 +35,5 @@ prime/*
 stage/*
 snap/.snapcraft/*
 go.sum
+*hardware.json
 squashfs-root/

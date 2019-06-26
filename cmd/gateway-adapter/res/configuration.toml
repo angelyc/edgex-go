@@ -36,7 +36,9 @@ File = './logs/gateway-adapter.log'
 Address = '119.3.36.199'
 Port = 3002
 Protocol = 'TCP'
-Topic = '/gateway-adapter'
 Publisher = 'gateway-adapter-go'
 User = 'admin'
 Password = 'mingdu2018'
+
+[Hardware]
+File = '/mnt/host/hardware.json'

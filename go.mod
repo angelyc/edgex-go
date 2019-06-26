@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/mux v1.7.0
 	github.com/hashicorp/consul v1.4.2
 	github.com/imdario/mergo v0.3.6
+	github.com/klauspost/cpuid v1.2.1
 	github.com/magiconair/properties v1.8.0
 	github.com/mattn/go-xmpp v0.0.0-20190124093244-6093f50721ed
 	github.com/mitchellh/consulstructure v0.0.0-20190329231841-56fdc4d2da54

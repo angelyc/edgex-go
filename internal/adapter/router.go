@@ -22,6 +22,7 @@ func LoadRestRoutes() *mux.Router {
 
 	b := r.PathPrefix(mdclient.ApiBase).Subrouter()
 
+	b.HandleFunc("/"+Gateway_Info, restGetGatewayInfo).Methods(http.MethodGet)
 	loadStaticsRoutes(b)
 	return r
 }
@@ -31,11 +32,12 @@ func loadStaticsRoutes(b *mux.Router) {
 	b.HandleFunc("/"+STATICS, restClearStatics).Methods(http.MethodPut)
 	b.HandleFunc("/"+STATICS, restGetStatics).Methods(http.MethodGet)
 }
+
 func pingHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	msg := "I am GOGOGO!!!"
 	data2 := []byte(msg)
-	MqttClient.Sender(data2, nil)
+	publisher.Sender("gateway-adapter", data2)
 	w.Write([]byte("pong"))
 }
 

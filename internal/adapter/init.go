@@ -19,9 +19,8 @@ var Configuration *ConfigurationStruct
 var dbClient interfaces.DBClient
 var LoggingClient logger.LoggingClient
 //var nc notifications.NotificationsClient
-var MqttClient client
-//var registryErrors chan error        //A channel for "config wait errors" sourced from Registry
-//var registryUpdates chan interface{} //A channel for "config updates" sourced from Registry.
+var publisher client
+var GatewayId string
 func Retry(useRegistry bool, useProfile string, timeout int, wait *sync.WaitGroup, ch chan error) {
 	until := time.Now().Add(time.Millisecond * time.Duration(timeout))
 	for time.Now().Before(until) {
@@ -122,7 +121,16 @@ func Destruct() {
 }
 func initializeClients() {
 	// Create notification client
-	MqttClient = newMqttClient(Configuration.MQTT, Configuration.Cert, Configuration.Key)
+	cert := ""
+	key := ""
+	InitGatewayID()
+	SubInit()
+	mqttClient := newMqttClient(Configuration.MQTT, cert, key)
+	publisher = &MqttClient{
+		client: mqttClient,
+	}
+
+	Register()
 }
 func setLoggingTarget() string {
 	if Configuration.Logging.EnableRemote {

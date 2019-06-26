@@ -11,9 +11,8 @@ type ConfigurationStruct struct {
 	Writable  WritableInfo
 	Databases map[string]config.DatabaseInfo
 	MQTT      address
-	Cert      string
-	Key       string
 }
+
 
 type WritableInfo struct {
 	LogLevel string
@@ -27,7 +26,6 @@ type address struct {
 	Port      int
 	Protocol  string
 	Path      string
-	Topic     string
 }
 
 /*
