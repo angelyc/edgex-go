@@ -22,7 +22,6 @@ func LoadRestRoutes() *mux.Router {
 
 	b := r.PathPrefix(mdclient.ApiBase).Subrouter()
 
-	b.HandleFunc("/"+Gateway_Info, restGetGatewayInfo).Methods(http.MethodGet)
 	loadStaticsRoutes(b)
 	return r
 }
@@ -31,6 +30,13 @@ func loadStaticsRoutes(b *mux.Router) {
 	// /api/v1/" + STATICS
 	b.HandleFunc("/"+STATICS, restClearStatics).Methods(http.MethodPut)
 	b.HandleFunc("/"+STATICS, restGetStatics).Methods(http.MethodGet)
+}
+
+func loadGwInfoRoutes(b *mux.Router) {
+	// /api/v1/" + Gateway_Info
+	b.HandleFunc("/"+Gateway_Info, restGetGatewayInfo).Methods(http.MethodGet)
+	b.HandleFunc("/"+Gateway_Info+ "/" +GatewayName, restSetGatewayInfoName).Methods(http.MethodPost, http.MethodPut)
+	b.HandleFunc("/"+Gateway_Info+ "/" +GatewayLocation, restSetGatewayInfoLocation).Methods(http.MethodPost, http.MethodPut)
 }
 
 func pingHandler(w http.ResponseWriter, _ *http.Request) {
